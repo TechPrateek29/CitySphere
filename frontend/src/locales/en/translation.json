@@ -1,0 +1,12 @@
+{
+  "appTitle": "CitySphere",
+  "logout": "Logout",
+  "citizenDashboard": "Citizen Dashboard",
+  "fieldStaffDashboard": "Field Staff Dashboard",
+  "adminDashboard": "Admin Dashboard",
+  "newComplaint": "File New Complaint",
+  "myComplaints": "My Complaints",
+  "utilityBills": "My Utility Bills",
+  "loading": "Loading...",
+  "submit": "Submit"
+}

@@ -97,9 +97,9 @@ const ServiceRequests = () => {
 
   return (
     <div className="space-y-6">
-      <div className="flex justify-between items-center bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
+      <div className="flex flex-col sm:flex-row justify-between sm:items-center bg-white p-6 rounded-xl border border-gray-100 shadow-sm gap-4">
          <div className="flex items-center space-x-3 text-primary">
-            <FileText size={24} className="text-secondary" />
+            <FileText size={24} className="text-secondary shrink-0" />
             <h2 className="text-xl font-bold">Service Requests</h2>
          </div>
          {user.role === 'citizen' && (
@@ -189,72 +189,74 @@ const ServiceRequests = () => {
          </form>
       )}
 
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-         <table className="w-full text-left border-collapse">
-            <thead>
-               <tr className="bg-gray-50 text-gray-600 text-sm uppercase">
-                  <th className="p-4">Service Type</th>
-                  {user.role !== 'citizen' && <th className="p-4">Applicant</th>}
-                  <th className="p-4">Status</th>
-                  <th className="p-4">Documents</th>
-                  {user.role !== 'citizen' && <th className="p-4">Actions</th>}
-               </tr>
-            </thead>
-            <tbody>
-               {requests.length === 0 && <tr><td colSpan="5" className="p-8 text-center text-slate-500">No requests found.</td></tr>}
-               {requests.map(req => {
-                  const safeUrls = Array.isArray(req.document_urls) ? req.document_urls : [];
-                  const metadata = safeUrls.find(u => u && typeof u === 'object' && u.type === 'metadata') || {};
-                  const files = safeUrls.filter(u => !u || typeof u === 'string' || u.type !== 'metadata');
+      <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden w-full">
+         <div className="overflow-x-auto">
+            <table className="w-full text-left border-collapse min-w-max">
+               <thead>
+                  <tr className="bg-gray-50 text-gray-600 text-sm uppercase">
+                     <th className="p-4">Service Type</th>
+                     {user.role !== 'citizen' && <th className="p-4">Applicant</th>}
+                     <th className="p-4">Status</th>
+                     <th className="p-4">Documents</th>
+                     {user.role !== 'citizen' && <th className="p-4">Actions</th>}
+                  </tr>
+               </thead>
+               <tbody>
+                  {requests.length === 0 && <tr><td colSpan="5" className="p-8 text-center text-slate-500">No requests found.</td></tr>}
+                  {requests.map(req => {
+                     const safeUrls = Array.isArray(req.document_urls) ? req.document_urls : [];
+                     const metadata = safeUrls.find(u => u && typeof u === 'object' && u.type === 'metadata') || {};
+                     const files = safeUrls.filter(u => !u || typeof u === 'string' || u.type !== 'metadata');
 
-                  return (
-                     <tr key={req.id} className="border-t hover:bg-gray-50 transition">
-                        <td className="p-4">
-                           <div className="font-bold text-slate-800 capitalize leading-tight mb-1">{req.service_type.replace(/_/g, ' ')}</div>
-                           {metadata.applicant_name && (
-                              <div className="text-xs text-slate-500 flex flex-col space-y-0.5 mt-2">
-                                 <span><strong className="text-slate-600">Applicant:</strong> {metadata.applicant_name}</span>
-                                 <span><strong className="text-slate-600">Contact:</strong> {metadata.contact_number}</span>
-                              </div>
-                           )}
-                        </td>
-                        {user.role !== 'citizen' && <td className="p-4 font-medium text-slate-700">{req.citizen.name}</td>}
-                        <td className="p-4">
-                           <span className={`px-3 py-1 text-xs font-bold rounded-full flex w-max items-center ${
-                              req.status === 'approved' ? 'bg-emerald-100 text-emerald-700 border border-emerald-200' : 
-                              req.status === 'rejected' ? 'bg-red-100 text-red-700 border border-red-200' : 'bg-amber-100 text-amber-700 border border-amber-200'
-                           }`}>
-                              {req.status === 'approved' ? <CheckCircle size={12} className="mr-1" /> : <Clock size={12} className="mr-1" />}
-                              {req.status.replace('_', ' ').toUpperCase()}
-                           </span>
-                        </td>
-                        <td className="p-4">
-                           {files.length > 0 ? (
-                              <div className="flex flex-col space-y-1.5">
-                                 {files.map((file, i) => {
-                                    if (!file) return null;
-                                    const url = typeof file === 'string' ? file : file.url;
-                                    const label = typeof file === 'string' ? `Doc ${i+1}` : file.type;
-                                    return (
-                                       <a key={i} href={url} target="_blank" rel="noreferrer" className="text-indigo-600 bg-indigo-50 px-2 py-1 rounded w-fit hover:bg-indigo-100 hover:text-indigo-800 text-xs font-bold flex items-center shadow-sm transition border border-indigo-100">
-                                          <FileText size={10} className="mr-1.5 opacity-50" /> {label}
-                                       </a>
-                                    );
-                                 })}
-                              </div>
-                           ) : <span className="text-sm text-slate-400 font-medium">No Documents</span>}
-                        </td>
-                        {user.role !== 'citizen' && (
-                           <td className="p-4 flex space-x-2">
-                              <button onClick={() => updateStatus(req.id, 'approved')} className="text-xs bg-emerald-50 text-emerald-700 font-bold px-3 py-1.5 rounded-lg hover:bg-emerald-100 border border-emerald-200 transition shadow-sm">Approve</button>
-                              <button onClick={() => updateStatus(req.id, 'rejected')} className="text-xs bg-red-50 text-red-700 font-bold px-3 py-1.5 rounded-lg hover:bg-red-100 border border-red-200 transition shadow-sm">Reject</button>
+                     return (
+                        <tr key={req.id} className="border-t hover:bg-gray-50 transition">
+                           <td className="p-4">
+                              <div className="font-bold text-slate-800 capitalize leading-tight mb-1">{req.service_type.replace(/_/g, ' ')}</div>
+                              {metadata.applicant_name && (
+                                 <div className="text-xs text-slate-500 flex flex-col space-y-0.5 mt-2">
+                                    <span><strong className="text-slate-600">Applicant:</strong> {metadata.applicant_name}</span>
+                                    <span><strong className="text-slate-600">Contact:</strong> {metadata.contact_number}</span>
+                                 </div>
+                              )}
                            </td>
-                        )}
-                     </tr>
-                  );
-               })}
-            </tbody>
-         </table>
+                           {user.role !== 'citizen' && <td className="p-4 font-medium text-slate-700">{req.citizen?.name}</td>}
+                           <td className="p-4">
+                              <span className={`px-3 py-1 text-xs font-bold rounded-full flex w-max items-center ${
+                                 req.status === 'approved' ? 'bg-emerald-100 text-emerald-700 border border-emerald-200' : 
+                                 req.status === 'rejected' ? 'bg-red-100 text-red-700 border border-red-200' : 'bg-amber-100 text-amber-700 border border-amber-200'
+                              }`}>
+                                 {req.status === 'approved' ? <CheckCircle size={12} className="mr-1" /> : <Clock size={12} className="mr-1" />}
+                                 {req.status.replace('_', ' ').toUpperCase()}
+                              </span>
+                           </td>
+                           <td className="p-4">
+                              {files.length > 0 ? (
+                                 <div className="flex flex-col space-y-1.5 min-w-[120px]">
+                                    {files.map((file, i) => {
+                                       if (!file) return null;
+                                       const url = typeof file === 'string' ? file : file.url;
+                                       const label = typeof file === 'string' ? `Doc ${i+1}` : file.type;
+                                       return (
+                                          <a key={i} href={url} target="_blank" rel="noreferrer" className="text-indigo-600 bg-indigo-50 px-2 py-1 rounded w-fit hover:bg-indigo-100 hover:text-indigo-800 text-xs font-bold flex items-center shadow-sm transition border border-indigo-100">
+                                             <FileText size={10} className="mr-1.5 opacity-50" /> {label}
+                                          </a>
+                                       );
+                                    })}
+                                 </div>
+                              ) : <span className="text-sm text-slate-400 font-medium whitespace-nowrap">No Documents</span>}
+                           </td>
+                           {user.role !== 'citizen' && (
+                              <td className="p-4 flex space-x-2">
+                                 <button onClick={() => updateStatus(req.id, 'approved')} className="text-xs bg-emerald-50 text-emerald-700 font-bold px-3 py-1.5 rounded-lg hover:bg-emerald-100 border border-emerald-200 transition shadow-sm whitespace-nowrap">Approve</button>
+                                 <button onClick={() => updateStatus(req.id, 'rejected')} className="text-xs bg-red-50 text-red-700 font-bold px-3 py-1.5 rounded-lg hover:bg-red-100 border border-red-200 transition shadow-sm whitespace-nowrap">Reject</button>
+                              </td>
+                           )}
+                        </tr>
+                     );
+                  })}
+               </tbody>
+            </table>
+         </div>
       </div>
     </div>
   );

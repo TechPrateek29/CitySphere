@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../services/supabase';
-import { Activity, CheckCircle, Clock, ArrowRight, ShieldCheck, Zap, Hexagon, MessageSquare, Lock, TrendingUp, Users, MapPin, Search, Leaf, Shield, FileText } from 'lucide-react';
+import { Activity, CheckCircle, Clock, ArrowRight, ShieldCheck, Zap, Hexagon, MessageSquare, Lock, TrendingUp, Users, MapPin, Search, Leaf, Shield, FileText, Menu, X } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 const PublicDashboard = () => {
   const [stats, setStats] = useState({ total: 0, resolved: 0, inProgress: 0, avgRating: 0 });
   const [loading, setLoading] = useState(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Rotating Headline Words
   const words = ["sustainable", "ecological", "efficient", "accountable", "green"];
@@ -82,21 +83,42 @@ const PublicDashboard = () => {
                </div>
                <span>City<span className="text-emerald-400">Sphere</span></span>
             </div>
-            <div className="hidden md:flex items-center space-x-10 font-medium text-sm text-emerald-100/60">
-               <a href="#stats" className="hover:text-emerald-300 transition-colors">Live Operations</a>
-               <a href="#features" className="hover:text-emerald-300 transition-colors">Features</a>
-               <a href="#how-it-works" className="hover:text-emerald-300 transition-colors">Architecture</a>
-               <Link to="/login" className="group relative px-6 py-2.5 rounded-full font-bold text-white overflow-hidden flex items-center space-x-2">
-                  <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-teal-600 transition-transform group-hover:scale-105" />
-                  <div className="absolute inset-0 bg-gradient-to-r from-teal-600 to-emerald-600 opacity-0 group-hover:opacity-100 transition-opacity" />
-                  <span className="relative z-10 flex items-center space-x-2">
-                     <span>Access Portals</span>
-                     <ArrowRight size={16} />
-                  </span>
-               </Link>
-            </div>
-         </div>
-      </nav>
+             <div className="hidden md:flex items-center space-x-10 font-medium text-sm text-emerald-100/60">
+                <a href="#stats" className="hover:text-emerald-300 transition-colors">Live Operations</a>
+                <a href="#features" className="hover:text-emerald-300 transition-colors">Features</a>
+                <a href="#how-it-works" className="hover:text-emerald-300 transition-colors">Architecture</a>
+                <Link to="/login" className="group relative px-6 py-2.5 rounded-full font-bold text-white overflow-hidden flex items-center space-x-2">
+                   <div className="absolute inset-0 bg-gradient-to-r from-emerald-600 to-teal-600 transition-transform group-hover:scale-105" />
+                   <div className="absolute inset-0 bg-gradient-to-r from-teal-600 to-emerald-600 opacity-0 group-hover:opacity-100 transition-opacity" />
+                   <span className="relative z-10 flex items-center space-x-2">
+                      <span>Access Portals</span>
+                      <ArrowRight size={16} />
+                   </span>
+                </Link>
+             </div>
+             
+             {/* Mobile Menu Toggle */}
+             <button 
+                className="md:hidden text-emerald-100/80 hover:text-white"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+             >
+                {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+             </button>
+          </div>
+
+          {/* Mobile Nav Dropdown */}
+          {isMobileMenuOpen && (
+             <div className="md:hidden bg-[#06110d]/95 backdrop-blur-3xl border-b border-emerald-900/40 px-6 pt-4 pb-8 absolute w-full flex flex-col space-y-6 text-center animate-fade-in origin-top">
+                <a href="#stats" onClick={() => setIsMobileMenuOpen(false)} className="text-emerald-100/80 font-medium hover:text-emerald-300 text-lg">Live Operations</a>
+                <a href="#features" onClick={() => setIsMobileMenuOpen(false)} className="text-emerald-100/80 font-medium hover:text-emerald-300 text-lg">Features</a>
+                <a href="#how-it-works" onClick={() => setIsMobileMenuOpen(false)} className="text-emerald-100/80 font-medium hover:text-emerald-300 text-lg">Architecture</a>
+                <Link to="/login" className="mx-auto mt-4 px-8 py-3 rounded-full font-bold text-white bg-gradient-to-r from-emerald-600 to-teal-600 flex items-center justify-center space-x-2 w-full max-w-xs shadow-lg">
+                   <span>Access Portals</span>
+                   <ArrowRight size={18} />
+                </Link>
+             </div>
+          )}
+       </nav>
 
       <div className="relative z-10 pt-40 pb-24 overflow-hidden">
         

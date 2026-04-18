@@ -41,12 +41,12 @@ const AdminComplaints = () => {
 
   return (
     <div className="max-w-7xl mx-auto space-y-6 animate-fade-in relative z-10">
-       <div className="flex justify-between items-end mb-8">
+       <div className="flex flex-col sm:flex-row justify-between sm:items-end mb-8 gap-4">
           <div>
              <h2 className="text-3xl font-extrabold font-outfit text-slate-900 tracking-tight">Master Complaints Log</h2>
              <p className="text-slate-500 mt-2">View and monitor all city-wide issues reported by citizens.</p>
           </div>
-          <div className="bg-indigo-50 text-indigo-700 px-4 py-2 rounded-xl text-sm font-bold border border-indigo-100">
+          <div className="bg-indigo-50 text-indigo-700 px-4 py-2 rounded-xl text-sm font-bold border border-indigo-100 w-fit">
              Total Records: {complaints.length}
           </div>
        </div>

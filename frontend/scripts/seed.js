@@ -5,13 +5,13 @@ const supabaseUrl = process.env.VITE_SUPABASE_URL || 'YOUR_SUPABASE_URL';
 const supabaseKey = process.env.VITE_SUPABASE_ANON_KEY || 'YOUR_SUPABASE_ANON_KEY';
 const supabase = createClient(supabaseUrl, supabaseKey);
 
-const seedDatabase = async () => {
+const-eedDatabase = async () => {
     console.log('🌱 Starting database seeding...');
-    
+
     // Seed 20 random complaints for Public Dashboard metrics
     const statuses = ['pending', 'in-progress', 'resolved', 'resolved', 'resolved'];
     const depts = ['General', 'Water', 'Electricity', 'Roads', 'Sanitation'];
-    
+
     const complaints = Array.from({ length: 20 }).map((_, i) => ({
         title: `Public Issue #${i + 1}`,
         description: `This is an auto-generated sample issue description for testing area ${i}.`,

@@ -35,28 +35,35 @@ const Register = () => {
       const role = registerType === 'field_staff' ? 'pending_staff' : 'citizen';
       const { user, session } = await register({ ...formData, role });
       
+      if (user) {
+         const profileData = {
+            id: user.id,
+            email: formData.email,
+            name: formData.name,
+            role: role // 'pending_staff' or 'citizen'
+         };
+
+         if (registerType === 'field_staff') {
+            // Upload files
+            profileData.phone_number = formData.phone;
+            profileData.aadhar_number = formData.aadhar;
+            profileData.aadhar_photo_url = await handleFileUpload(files.aadharPhoto, 'staff_applications', `aadhar_${user.id}`);
+            profileData.passport_photo_url = await handleFileUpload(files.passportPhoto, 'staff_applications', `passport_${user.id}`);
+            profileData.citizenship_proof_url = await handleFileUpload(files.citizenshipProof, 'staff_applications', `citizenship_${user.id}`);
+         }
+
+         await supabase.from('profiles').upsert(profileData);
+
+         if (registerType === 'field_staff') {
+            alert("Application submitted! An Administrator must review your KYC documents before you can access the Staff Dashboard. Our team will notify you via email.");
+         }
+      }
+
       // If Email Confirmations are enabled in Supabase, session will be null
       if (!session) {
          alert("Registration successful! Please check your email inbox for a confirmation link to activate your account. You will not be able to log in until you verify your email address.");
          navigate('/login');
          return;
-      }
-      
-      if (registerType === 'field_staff' && user) {
-         // Upload files
-         const aadharUrl = await handleFileUpload(files.aadharPhoto, 'staff_applications', `aadhar_${user.id}`);
-         const passportUrl = await handleFileUpload(files.passportPhoto, 'staff_applications', `passport_${user.id}`);
-         const citUrl = await handleFileUpload(files.citizenshipProof, 'staff_applications', `citizenship_${user.id}`);
-
-         await supabase.from('profiles').update({
-            phone_number: formData.phone,
-            aadhar_number: formData.aadhar,
-            aadhar_photo_url: aadharUrl,
-            passport_photo_url: passportUrl,
-            citizenship_proof_url: citUrl
-         }).eq('id', user.id);
-
-         alert("Application submitted! An Administrator must review your KYC documents before you can access the Staff Dashboard. Our team will notify you via email.");
       }
       
       navigate('/');

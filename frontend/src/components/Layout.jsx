@@ -35,8 +35,7 @@ const Layout = () => {
          />
       )}
       <aside 
-         className="fixed inset-y-0 left-0 z-50 w-72 glass flex flex-col h-full transition-transform duration-300 ease-in-out border-r border-white/40 lg:static lg:translate-x-0"
-         style={{ transform: isSidebarOpen ? 'translateX(0)' : 'translateX(-100%)' }}
+         className={`fixed inset-y-0 left-0 z-50 w-72 glass flex flex-col h-full transition-transform duration-300 ease-in-out border-r border-white/40 lg:static lg:translate-x-0 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
       >
         <div className="p-6">
            <div className="mb-8 font-extrabold text-2xl text-primary flex items-center space-x-3 font-outfit tracking-tight">
